@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính Học Lực Học Sinh</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #fceabb, #f8b500);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            background: #ffffffcc;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .form-area, .result-area {
+            flex: 1;
+            margin: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff6f61;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 60px;
+            padding: 6px;
+            margin: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: #ff6f61;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #ff6f61;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e55a4e;
+        }
+
+        .result-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #f0f8ff;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .result-area p {
+            font-size: 18px;
+            margin: 8px 0;
+            color: #333;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #ff6f61;
+        }
+
+        .decor {
+            position: absolute;
+            width: 60px;
+            opacity: 0.3;
+        }
+
+        .decor1 { top: 20px; left: 20px; }
+        .decor2 { bottom: 30px; right: 50px; }
+        .decor3 { top: 100px; right: 100px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="form-area">
+            <h1>📘 Tính Học Lực</h1>
+
+            <label>Số lượng môn học:</label>
+            <input type="number" id="numSubjects" min="1" value="3">
+            <button onclick="generateInputs()">Tạo ô nhập điểm</button>
+
+            <div id="subjectsInputs" style="margin-top: 10px;"></div>
+
+            <button onclick="calculateAverage()">Tính Học Lực</button>
+        </div>
+
+        <div class="result-area" id="resultArea">
+            👉 Nhập số lượng môn và điểm để xem kết quả
+        </div>
+    </div>
+
+<script>
+    function generateInputs() {
+        const num = parseInt(document.getElementById('numSubjects').value);
+        const container = document.getElementById('subjectsInputs');
+        container.innerHTML = '';
+
+        if (isNaN(num) || num < 1) {
+            alert("Số lượng môn phải >= 1!");
+            return;
+        }
+
+        for (let i = 1; i <= num; i++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = 0;
+            input.max = 10;
+            input.step = 0.1;
+            input.placeholder = `Môn ${i}`;
+            input.id = `subject${i}`;
+            container.appendChild(input);
+        }
+    }
+
+    function calculateAverage() {
+        const num = parseInt(document.getElementById('numSubjects').value);
+        let total = 0;
+        let valid = true;
+
+        for (let i = 1; i <= num; i++) {
+            const val = parseFloat(document.getElementById(`subject${i}`).value);
+            if (isNaN(val) || val < 0 || val > 10) {
+                valid = false;
+                break;
+            }
+            total += val;
+        }
+
+        const resultArea = document.getElementById('resultArea');
+
+        if (!valid) {
+            resultArea.innerHTML = "⚠️ Vui lòng nhập tất cả điểm hợp lệ (0-10)!";
+            return;
+        }
+
+        const average = (total / num).toFixed(2);
+        let grade = '';
+
+        if (average >= 8) grade = 'Giỏi 🌟';
+        else if (average >= 6.5) grade = 'Khá 👍';
+        else if (average >= 5) grade = 'Trung bình 🙂';
+        else grade = 'Yếu 😢';
+
+        resultArea.innerHTML = `
+            Điểm trung bình: <span class="highlight">${average}</span><br>
+            Học lực: <span class="highlight">${grade}</span>
+        `;
+    }
+
+    // Tạo mặc định 3 môn khi load trang
+    window.onload = generateInputs;
+</script>
+
+</body>
+</html>
